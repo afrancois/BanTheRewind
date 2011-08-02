@@ -1,0 +1,16 @@
+This repository contains the public experiments, works 
+in progress, and official blocks for Cinder from Ban 
+the Rewind. Feel free to look around and contribute 
+where you see fit.
+
+The vast majority of this is Windows-only. XCode sample
+projects are the most welcome addition to this codebase. 
+However, anything which wraps a Windows-specific API or
+requires DLL file won't work on Mac.
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com
