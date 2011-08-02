@@ -1,0 +1,16 @@
+This block is a simple alternative to Cinder's TextLayout
+and TextureFont. It behaves more like a text field in 
+Flash, etc. It supports automatic word wrapping, and dynamic
+changing of text, fonts, and leading. It extends ci::Area, 
+allowing for quick resizing, collision detection, etc.
+
+WISH LIST
+
+- Sample application
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com

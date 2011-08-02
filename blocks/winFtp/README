@@ -1,0 +1,17 @@
+This block wraps Windows' Internet API to provide low
+level FTP functionality to Cinder for sending files to 
+remote server. It has a limited, but solid feature set.
+
+WISH LIST
+
+ - Download
+ - Resume (both directions)
+ - Remote directory listing
+ - Remote directory traversing
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com

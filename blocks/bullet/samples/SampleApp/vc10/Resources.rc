@@ -1,0 +1,4 @@
+#include "../include/Resources.h"
+
+RES_SPHERE
+RES_TORUS

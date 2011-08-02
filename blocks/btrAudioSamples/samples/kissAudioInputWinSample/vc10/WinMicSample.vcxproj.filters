@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="blocks">
+      <UniqueIdentifier>{07107ebc-0127-4ea4-9af6-37921c5ca226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\kiss">
+      <UniqueIdentifier>{ab9a9dbb-cf3a-43ee-a944-53f6297db9f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\kiss\Header Files">
+      <UniqueIdentifier>{ac715568-ef4f-4bc6-9d4d-8b27ff8e24e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\kiss\Header Files\kiss">
+      <UniqueIdentifier>{31ddf92c-75e1-41a9-82b6-cb383f567f2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\kiss\Source Files">
+      <UniqueIdentifier>{910016a0-479b-4fbd-bda9-0e37cf3228a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\audioInputWin">
+      <UniqueIdentifier>{e2e66c44-a2d5-4a63-91d7-cf93b306157e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blocks\audioInputWin\Header Files">
+      <UniqueIdentifier>{1dcfbb29-e7fc-44cb-9d31-fc0f5f347367}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\kiss\src\Kiss.cpp">
+      <Filter>blocks\kiss\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\kiss\include\kiss\kiss_fft.c">
+      <Filter>blocks\kiss\Header Files\kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\kiss\include\kiss\kiss_fftr.c">
+      <Filter>blocks\kiss\Header Files\kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\WinMicSampleApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\kiss\include\Kiss.h">
+      <Filter>blocks\kiss\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\kiss\include\kiss\_kiss_fft_guts.h">
+      <Filter>blocks\kiss\Header Files\kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\kiss\include\kiss\kiss_fft.h">
+      <Filter>blocks\kiss\Header Files\kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\kiss\include\kiss\kiss_fftr.h">
+      <Filter>blocks\kiss\Header Files\kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\audioInputWin\include\AudioInput.h">
+      <Filter>blocks\audioInputWin\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

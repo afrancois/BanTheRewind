@@ -1,0 +1,17 @@
+Those who have done 2D game development will likely be 
+familiar with the idea of the sprite batch. This is a 2D sprite
+batch system for Cinder. Sprites extend ci::Area, inheriting things
+like quick resizing, collision detection, etc. The sprite batch 
+manages the sprite through an ID system, and has a draw() method which
+renders all sprites.
+
+WISH LIST
+
+- Sample project
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com

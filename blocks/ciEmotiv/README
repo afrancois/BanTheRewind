@@ -1,0 +1,15 @@
+This is a Cinder wrapper for the Emotiv SDK. The Emotiv 
+SDK is not free, therefore I cannot distribute any part of
+it with this code. To learn more about the Emotiv EPOC and 
+this block, check out the following URLs:
+
+http://www.emotiv.com/
+http://bantherewind.com/ciemotiv
+http://bantherewind.com/seccog
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com

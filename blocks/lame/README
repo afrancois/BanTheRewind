@@ -1,0 +1,10 @@
+This block wraps LAME to perform simple, fast MP3 encoding.
+Check out the "inputWinLame" sample project in "btrAudioSamples"
+for an example.
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com
