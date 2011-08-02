@@ -8,6 +8,11 @@ projects are the most welcome addition to this codebase.
 However, anything which wraps a Windows-specific API or
 requires DLL file won't work on Mac.
 
+To implement these blocks, clone this repository and 
+merge the contents into your Cinder root directory. That 
+is, copy the contents of "blocks" from the repo into Cinder's
+"blocks" folder on your system.
+
 -----------------------------------------
 
 http://www.bantherewind.com
