@@ -9,8 +9,7 @@ Some notable features include...
 
 - VBO representations of all bodies
 - Convenience methods for most rigid primitives
-- Converts and TriMesh into a convex or concave 
-  physics body
+- Converts TriMesh into a convex or concave physics body
 - Creates interactive terrain from heightfield (bitmap)
 - Easy to use body manager
 - Soft body dynamics ready
