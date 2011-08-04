@@ -63,6 +63,7 @@ public:
 	void keyDown(KeyEvent event);
 	void prepareSettings(Settings * settings);
 	void setup();
+	void shutdown();
 	void update();
 
 private:
@@ -200,7 +201,6 @@ void SkeletonApp::keyDown(KeyEvent event)
 	{
 	case KeyEvent::KEY_ESCAPE:
 		shutdown();
-		exit(1);
 		break;
 	case KeyEvent::KEY_f:
 		setFullScreen(!isFullScreen());
@@ -239,6 +239,18 @@ void SkeletonApp::setup()
 
 	// Define drawing body
 	defineBody();
+
+}
+
+// Called on exit
+void SkeletonApp::shutdown()
+{
+
+	// Stop input
+	mKinect.stop();
+
+	// Force exit
+	exit(1);
 
 }
 

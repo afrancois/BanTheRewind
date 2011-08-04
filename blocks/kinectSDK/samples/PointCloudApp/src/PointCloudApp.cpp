@@ -59,7 +59,7 @@ public:
 	void draw();
 	void keyDown(KeyEvent event);
 	void prepareSettings(Settings * settings);
-	void quit();
+	void shutdown();
 	void setup();
 	void update();
 
@@ -71,6 +71,9 @@ private:
 
 	// Depth points
 	vector<Vec3f> mPoints;
+	Vec3f mOffset;
+	float mScale;
+	Vec3f mSpacing;
 
 	// Camera
 	CameraPersp mCamera;
@@ -86,11 +89,13 @@ void PointCloudApp::draw()
 
 	// Clear window
 	gl::setViewport(getWindowBounds());
-	gl::clear(Colorf(0.1f, 0.1f, 0.1f));
+	gl::clear(Colorf(0.0f, 0.0f, 0.0f));
 	gl::setMatrices(mCamera);
+	glPushMatrix();
+	glScalef(Vec3f(mScale, mScale, 1.0f));
 
 	// Use time to animate color
-	float colorOffset = math<float>::sin((float)getElapsedSeconds()) * 0.3f;
+	float colorOffset = math<float>::sin((float)getElapsedSeconds()) * 0.5f;
 
 	// Draw points
 	glBegin(GL_POINTS);
@@ -98,14 +103,15 @@ void PointCloudApp::draw()
 	{
 		Vec3f point = * pointIt;
 		gl::color(ColorAf(
-			math<float>::abs(point.x + colorOffset * 10.0f) * 0.325f, 
-			math<float>::abs(point.y - colorOffset * 10.0f) * 0.0615f, 
-			math<float>::abs(point.z) * 0.0215f + colorOffset, 
-			math<float>::abs(point.z) * 0.05f
+			math<float>::max(math<float>::abs(math<float>::sin(point.x) * 0.5f + colorOffset), 0.4f), 
+			math<float>::max(math<float>::abs(math<float>::cos(point.y) * 0.5f - colorOffset), 0.4f), 
+			math<float>::max(math<float>::abs(math<float>::cos(point.z) * 0.5f - colorOffset), 0.4f), 
+			math<float>::abs(point.z) * 0.5f
 			));
-		glVertex3f(point * Vec3f(1.0f, 1.0f, 1.2f));
+		glVertex3f(point);
 	}
 	glEnd();
+	glPopMatrix();
 
 }
 
@@ -117,7 +123,7 @@ void PointCloudApp::keyDown(KeyEvent event)
 	switch (event.getCode())
 	{
 	case KeyEvent::KEY_ESCAPE:
-		quit();
+		shutdown();
 		break;
 	case KeyEvent::KEY_f:
 		setFullScreen(!isFullScreen());
@@ -140,8 +146,11 @@ void PointCloudApp::prepareSettings(Settings * settings)
 }
 
 // Quit
-void PointCloudApp::quit()
+void PointCloudApp::shutdown()
 {
+
+	// Stop input
+	mKinect.stop();
 
 	// Force exit
 	exit(1);
@@ -178,8 +187,13 @@ void PointCloudApp::setup()
 	mKinect.start();
 
 	// Set up camera
-	mCamera.lookAt(Vec3f(0.0f, 0.0f, -2.0f), Vec3f::zero());
+	mCamera.lookAt(Vec3f(0.0f, 0.0f, 0.001f), Vec3f::zero());
 	mCamera.setPerspective(60.0f, getWindowAspectRatio(), 1.0f, 1000.0f);
+
+	// Point scaling
+	mScale = 2.0f;
+	mSpacing.set(1.0f / 320.0f, -1.0f / 240.0f, 1.0f / 255.0f);
+	mOffset.set(-0.5f, 0.5f, 0.0f);
 
 }
 
@@ -194,12 +208,8 @@ void PointCloudApp::update()
 		// Get surface
 		mSurface = mKinect.getDepth();
 
-		// Starting position, offset, and spacing
-		Vec3f spacing = Vec3f(1.0f / 320.0f, -1.0f / 240.0f, 1.0f / 255.0f) * 32.0f;
-		Vec3f offset(-16.0f, 16.0f, 0.0f);
-		Vec3f position = Vec3f::zero();
-
 		// Clear point list
+		Vec3f position = Vec3f::zero();
 		mPoints.clear();
 
 		// Iterate image rows
@@ -227,19 +237,22 @@ void PointCloudApp::update()
 					if (r > depth)
 						depth = r;
 
+					// Invert depth
+					depth = 256 - depth;
+
 					// Add position to point list
-					mPoints.push_back((offset + position + Vec3f(0.0f, 0.0f, spacing.z * (float)depth)) * Vec3f(-1.0f, 1.0f, 1.0f));
+					mPoints.push_back(mOffset + position + Vec3f(0.0f, 0.0f, -mSpacing.z * ((float)depth * 5.0f)));
 
 				}
 
 				// Shift point
-				position.x += spacing.x;
+				position.x += mSpacing.x;
 
 			}
 
 			// Update position
 			position.x = 0.0f;
-			position.y += spacing.y;
+			position.y += mSpacing.y;
 
 		}
 

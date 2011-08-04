@@ -62,8 +62,8 @@ public:
 	// Cinder callbacks
 	void draw();
 	void prepareSettings(Settings * settings);
-	void quit();
 	void setup();
+	void shutdown();
 	void update();
 
 	// Audio callback
@@ -190,7 +190,7 @@ void KinectApp::draw()
 	if (mKinect.isCapturing())
 	{
 
-		// Set up cametra for 3D
+		// Set up camera for 3D
 		gl::setMatrices(mCamera);
 
 		// Move skeletons down below the rest of the interface
@@ -289,23 +289,6 @@ void KinectApp::prepareSettings(Settings * settings)
 
 }
 
-// Quit
-void KinectApp::quit()
-{
-
-	// Stop input
-	mInput.stop();
-	mInput.removeCallback(mCallbackId);
-
-	// Delete audio buffer
-	if (mData != 0)
-		delete [] mData;
-
-	// Force exit
-	exit(1);
-
-}
-
 // Take screen shot
 void KinectApp::screenShot()
 {
@@ -378,7 +361,7 @@ void KinectApp::setup()
 	mParams.addSeparator();
 	mParams.addParam("Full screen", & mFullScreen, "key=f");
 	mParams.addButton("Screen shot", std::bind(& KinectApp::screenShot, this), "key=s");
-	mParams.addButton("Quit", std::bind(& KinectApp::quit, this), "key=esc");
+	mParams.addButton("Quit", std::bind(& KinectApp::shutdown, this), "key=esc");
 
 	// Find Kinect audio
 	int32_t deviceId = -1;
@@ -392,6 +375,26 @@ void KinectApp::setup()
 	// Start receiving audio
 	mCallbackId = mInput.addCallback<KinectApp>(&KinectApp::onData, this);
 	mInput.start();
+
+}
+
+// Quit
+void KinectApp::shutdown()
+{
+
+	// Stop input
+	mInput.stop();
+	mInput.removeCallback(mCallbackId);
+
+	// Delete audio buffer
+	if (mData != 0)
+		delete [] mData;
+
+	// Stop Kinect
+	mKinect.stop();
+
+	// Force exit
+	exit(1);
 
 }
 
