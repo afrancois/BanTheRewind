@@ -95,6 +95,7 @@ namespace cinder
 		double readDouble(Value & object, int32_t index);
 		float readFloat(Value & object, int32_t index);
 		int32_t readInt(Value & object, int32_t index);
+		const char * readCString(Value & object, int32_t index);
 		string readString(Value & object, int32_t index);
 		uint32_t readUint(Value & object, int32_t index);
 		Value readValue(Value & object, int32_t index);
@@ -104,6 +105,7 @@ namespace cinder
 		vector<double> readDoubles(Value & object, int32_t index);
 		vector<float> readFloats(Value & object, int32_t index);
 		vector<int32_t> readInts(Value & object, int32_t index);
+		vector<const char *> readCStrings(Value & object, int32_t index);
 		vector<string> readStrings(Value & object, int32_t index);
 		vector<uint32_t> readUints(Value & object, int32_t index);
 		vector<Value> readValues(Value & object, int32_t index);

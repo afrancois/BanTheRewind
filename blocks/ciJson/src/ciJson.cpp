@@ -164,6 +164,7 @@ namespace cinder
 		bool readBool(Value & object, int32_t index) { return object[index].asBool(); }
 		double readDouble(Value & object, int32_t index) { return object[index].asDouble(); }
 		int32_t readInt(Value & object, int32_t index) { return object[index].asInt(); }
+		const char * readCString(Value & object, int32_t index) { return object[index].asCString(); }
 		string readString(Value & object, int32_t index) { return object[index].asString(); }
 		uint32_t readUint(Value & object, int32_t index) { return object[index].asUInt(); }
 		Value readValue(Value & object, int32_t index) { return object[index]; }
