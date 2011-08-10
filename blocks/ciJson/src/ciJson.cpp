@@ -249,7 +249,7 @@ namespace cinder
 		{
 			vector<const char *> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				members.push_back(object[key][i].asBool());
+				members.push_back(object[key][i].asCString());
 			return members;
 		}
 		vector<double> readDoubles(Value & object, const string & key) 
