@@ -37,6 +37,9 @@
 // Include header
 #include "ciJson.h"
 
+// Import namespace
+using namespace std;
+
 namespace cinder
 {
 
@@ -45,7 +48,7 @@ namespace cinder
 
 		// Add values
 		void append(Value & object, const string & key, bool value) { object[key] = Value(value); }
-		void append(Value & object, const string & key, char * value) { object[key] = Value(value); }
+		void append(Value & object, const string & key, const char * value) { object[key] = Value(value); }
 		void append(Value & object, const string & key, double value) { object[key] = Value(value); }
 		void append(Value & object, const string & key, float value) { object[key] = Value(value); }
 		void append(Value & object, const string & key, int32_t value) { object[key] = Value(value); }
@@ -55,38 +58,43 @@ namespace cinder
 		// Append list of values
 		void append(Value & object, const string & key, vector<bool> values)
 		{
-			for (vector<bool>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<bool>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
+		}
+		void append(Value & object, const string & key, vector<const char *> values)
+		{
+			for (vector<const char *>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<double> values)
 		{
-			for (vector<double>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<double>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<float> values)
 		{
-			for (vector<float>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<float>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<int32_t> values)
 		{ 
-			for (vector<int32_t>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<int32_t>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<string> values) 
 		{ 
-			for (vector<string>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<string>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<uint32_t> values)
 		{ 
-			for (vector<uint32_t>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<uint32_t>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 		void append(Value & object, const string & key, vector<Value> values) 
 		{
-			for (vector<Value>::const_iterator mMember = values.begin(); mMember != values.end(); ++mMember)
-				object[key].append(* mMember);
+			for (vector<Value>::const_iterator memberIt = values.begin(); memberIt != values.end(); ++memberIt)
+				object[key].append(* memberIt);
 		}
 
 		// Deserialize JSON string to object
@@ -115,12 +123,12 @@ namespace cinder
 			}
 
 			// Get file size and rewind to beginning
-			ifstream::pos_type mSize = mFile.tellg();
-			char * mConfigData = new char[mSize];
+			ifstream::pos_type size = mFile.tellg();
+			char * mConfigData = new char[size];
 			mFile.seekg(0, ios::beg);
 
 			// Read entire file into JSON data
-			mFile.read(mConfigData, mSize);
+			mFile.read(mConfigData, size);
 			Value mValue = deserialize(string(mConfigData));
 
 			// Clean up
@@ -137,34 +145,34 @@ namespace cinder
 		{
 
 			// Load URL
-			DataSourceRef mDataSource = ci::loadUrl(Url(url, isEscaped));
+			DataSourceRef dataSource = ci::loadUrl(Url(url, isEscaped));
 
 			// Read buffer
-			Buffer mBuffer;
+			Buffer buffer;
 			try
 			{
-				mBuffer = mDataSource->getBuffer();
+				buffer = dataSource->getBuffer();
 			}
 			catch (...)
 			{
 				Value value;
 				return value;
 			}
-			size_t mDataSize = mBuffer.getDataSize();
-			shared_ptr<int_fast8_t> mBufferStr(new int_fast8_t[mDataSize + 1], checked_array_deleter<int_fast8_t>());
-			memcpy(mBufferStr.get(), mBuffer.getData(), mBuffer.getDataSize());
-			mBufferStr.get()[mDataSize] = 0;
+			size_t dataSize = buffer.getDataSize();
+			shared_ptr<int_fast8_t> bufferStr(new int_fast8_t[dataSize + 1], checked_array_deleter<int_fast8_t>());
+			memcpy(bufferStr.get(), buffer.getData(), buffer.getDataSize());
+			bufferStr.get()[dataSize] = 0;
 
 			// Convert buffer to string, deserialize and return
-			return deserialize(string(reinterpret_cast<char *>(mBufferStr.get())));
+			return deserialize(string(reinterpret_cast<char *>(bufferStr.get())));
 
 		}
 
 		// Read values (index)
 		bool readBool(Value & object, int32_t index) { return object[index].asBool(); }
+		const char * readCString(Value & object, int32_t index) { return object[index].asCString(); }
 		double readDouble(Value & object, int32_t index) { return object[index].asDouble(); }
 		int32_t readInt(Value & object, int32_t index) { return object[index].asInt(); }
-		const char * readCString(Value & object, int32_t index) { return object[index].asCString(); }
 		string readString(Value & object, int32_t index) { return object[index].asString(); }
 		uint32_t readUint(Value & object, int32_t index) { return object[index].asUInt(); }
 		Value readValue(Value & object, int32_t index) { return object[index]; }
@@ -172,49 +180,57 @@ namespace cinder
 		// Read values (index, plural)
 		vector<bool> readBools(Value & object, int32_t index) 
 		{
-			vector<bool> mMembers;
+			vector<bool> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i].asBool());
-			return mMembers;
+				members.push_back(object[index][i].asBool());
+			return members;
+		}
+		vector<const char *> readCStrings(Value & object, int32_t index) 
+		{
+			vector<const char *> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asCString());
+			return members;
 		}
 		vector<double> readDoubles(Value & object, int32_t index) 
 		{
-			vector<double> mMembers;
+			vector<double> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i].asDouble());
-			return mMembers;
+				members.push_back(object[index][i].asDouble());
+			return members;
 		}
 		vector<int32_t> readInts(Value & object, int32_t index) 
 		{
-			vector<int32_t> mMembers;
+			vector<int32_t> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i].asInt());
-			return mMembers;
+				members.push_back(object[index][i].asInt());
+			return members;
 		}
 		vector<string> readStrings(Value & object, int32_t index) 
 		{
-			vector<string> mMembers;
+			vector<string> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i].asString());
-			return mMembers;
+				members.push_back(object[index][i].asString());
+			return members;
 		}
 		vector<uint32_t> readUints(Value & object, int32_t index) 
 		{
-			vector<uint32_t> mMembers;
+			vector<uint32_t> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i].asUInt());
-			return mMembers;
+				members.push_back(object[index][i].asUInt());
+			return members;
 		}
 		vector<Value> readValues(Value & object, int32_t index) 
 		{ 
-			vector<Value> mMembers;
+			vector<Value> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
-				mMembers.push_back(object[index][i]);
-			return mMembers;
+				members.push_back(object[index][i]);
+			return members;
 		}
 
 		// Read values (key)
 		bool readBool(Value & object, const string & key) { return object[key].asBool(); }
+		const char * readCString(Value & object, const string & key) { return object[key].asCString(); }
 		double readDouble(Value & object, const string & key) { return object[key].asDouble(); }
 		int32_t readInt(Value & object, const string & key) { return object[key].asInt(); }
 		string readString(Value & object, const string & key) { return object[key].asString(); }
@@ -224,45 +240,52 @@ namespace cinder
 		// Read values (key, plural)
 		vector<bool> readBools(Value & object, const string & key) 
 		{
-			vector<bool> mMembers;
+			vector<bool> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i].asBool());
-			return mMembers;
+				members.push_back(object[key][i].asBool());
+			return members;
+		}
+		vector<const char *> readCStrings(Value & object, const string & key) 
+		{
+			vector<const char *> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asBool());
+			return members;
 		}
 		vector<double> readDoubles(Value & object, const string & key) 
 		{
-			vector<double> mMembers;
+			vector<double> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i].asDouble());
-			return mMembers;
+				members.push_back(object[key][i].asDouble());
+			return members;
 		}
 		vector<int32_t> readInts(Value & object, const string & key) 
 		{
-			vector<int32_t> mMembers;
+			vector<int32_t> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i].asInt());
-			return mMembers;
+				members.push_back(object[key][i].asInt());
+			return members;
 		}
 		vector<string> readStrings(Value & object, const string & key) 
 		{
-			vector<string> mMembers;
+			vector<string> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i].asString());
-			return mMembers;
+				members.push_back(object[key][i].asString());
+			return members;
 		}
 		vector<uint32_t> readUints(Value & object, const string & key) 
 		{
-			vector<uint32_t> mMembers;
+			vector<uint32_t> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i].asUInt());
-			return mMembers;
+				members.push_back(object[key][i].asUInt());
+			return members;
 		}
 		vector<Value> readValues(Value & object, const string & key) 
 		{ 
-			vector<Value> mMembers;
+			vector<Value> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
-				mMembers.push_back(object[key][i]);
-			return mMembers;
+				members.push_back(object[key][i]);
+			return members;
 		}
 
 		// Save JSON from file
@@ -270,13 +293,13 @@ namespace cinder
 		{
 
 			// Serialize data into string
-			string mJsonStr = serialize(value);
+			string jsonStr = serialize(value);
 
 			// Write JSON to file
-			fstream mFile;
-			mFile.open(filename.c_str(), ios::out|ios::trunc);
-			mFile << mJsonStr;
-			mFile.close();
+			fstream file;
+			file.open(filename.c_str(), ios::out|ios::trunc);
+			file << jsonStr;
+			file.close();
 
 		}
 
@@ -287,34 +310,34 @@ namespace cinder
 		{
 
 			// Tokenize URL
-			vector<string> mTokens;
-			boost::split(mTokens, url, boost::is_any_of("/"));
-			if (mTokens.size() < 3)
+			vector<string> tokens;
+			boost::split(tokens, url, boost::is_any_of("/"));
+			if (tokens.size() < 3)
 				return "Invalid URL. Please include protocol.";
 
 			// Get server portion of URL
-			string mServer = mTokens[2];
+			string server = tokens[2];
 
 			// Remove server portion of URL
 			for (int32_t i = 0; i < 3; i++)
-				mTokens.erase(mTokens.begin());
+				tokens.erase(tokens.begin());
 
 			// Get action portion of URL
-			string mAction = "";
-			for (vector<string>::const_iterator mToken = mTokens.begin(); mToken != mTokens.end(); ++mToken)
-				mAction += "/" + * mToken;
+			string action = "";
+			for (vector<string>::const_iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt)
+				action += "/" + * tokenIt;
 
 			// Serialize data
-			string mData = serialize(value);
+			string data = serialize(value);
 
 			// Open Internet connection
-			HINTERNET mSession = InternetOpenA("WinInetConnection", INTERNET_OPEN_TYPE_PRECONFIG_WITH_NO_AUTOPROXY, NULL, NULL, 0);
-			if (mSession == NULL)
+			HINTERNET session = InternetOpenA("WinInetConnection", INTERNET_OPEN_TYPE_PRECONFIG_WITH_NO_AUTOPROXY, NULL, NULL, 0);
+			if (session == NULL)
 				return "Unable to establish Internet session.";
 
 			// Open server
-			HINTERNET mConnect = InternetConnectA(mSession, mServer.c_str(), INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL);
-			if (mConnect == NULL)
+			HINTERNET connection = InternetConnectA(session, server.c_str(), INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, NULL);
+			if (connection == NULL)
 				return "Unable to establish Internet connection.";
 
 			// Open request flags
@@ -328,35 +351,35 @@ namespace cinder
 				INTERNET_FLAG_RELOAD;
 
 			// Open request
-			HINTERNET mRequest = HttpOpenRequestA(mConnect, "POST", mAction.c_str(), "HTTP/1.0", NULL, NULL, mOpenRequestFlags, 0);
-			if (mRequest == NULL)
+			HINTERNET request = HttpOpenRequestA(connection, "POST", action.c_str(), "HTTP/1.0", NULL, NULL, mOpenRequestFlags, 0);
+			if (request == NULL)
 				return "Unable to create request.";
 
 			// Send request
-			int_fast8_t mBuffer;
-			DWORD mSize;
-			string mHeaders = "Content-Type: application/x-www-form-urlencoded";
-			string mResponse = "";
-			if (HttpSendRequestA(mRequest, mHeaders.c_str(), mHeaders.length(), (LPVOID)(mData.c_str()), mData.length()))
+			int_fast8_t buffer;
+			DWORD size;
+			string headers = "Content-Type: application/x-www-form-urlencoded";
+			string response = "";
+			if (HttpSendRequestA(request, headers.c_str(), headers.length(), (LPVOID)(data.c_str()), data.length()))
 			{
 
 				// Read request into buffer
-				while (InternetReadFile(mRequest, &mBuffer, 1, &mSize))
+				while (InternetReadFile(request, &buffer, 1, &size))
 				{
-					if (mSize != 1)
+					if (size != 1)
 						break;
-					mResponse += mBuffer;
+					response += buffer;
 				}
 
 			}
 
 			// Close Internet handles
-			InternetCloseHandle(mRequest);
-			InternetCloseHandle(mConnect);
-			InternetCloseHandle(mSession);
+			InternetCloseHandle(request);
+			InternetCloseHandle(connection);
+			InternetCloseHandle(session);
 
 			// Return response
-			return mResponse;
+			return response;
 
 		}
 #endif
@@ -366,10 +389,10 @@ namespace cinder
 		{	
 
 			// Writes JSON
-			Json::StyledWriter mWriter;
+			Json::StyledWriter writer;
 
 			// Convert value to stylized string and return
-			return mWriter.write(value);
+			return writer.write(value);
 
 		}
 
