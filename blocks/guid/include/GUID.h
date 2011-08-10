@@ -96,5 +96,3 @@ namespace cinder
 	};
 
 }
-
-#endif
