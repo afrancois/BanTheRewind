@@ -202,18 +202,18 @@ private:
 				{
 
 					// Get device
-					WAVEINCAPS * mDevice = new WAVEINCAPS();
-					waveInGetDevCaps((UINT_PTR)i, mDevice, sizeof(WAVEINCAPS));
+					WAVEINCAPS * device = new WAVEINCAPS();
+					waveInGetDevCaps((UINT_PTR)i, device, sizeof(WAVEINCAPS));
 
 					// Get device name
 					memset(mDeviceName, 0, sizeof(mDeviceName));
-					use_facet<ctype<wchar_t> >(mLocale).narrow(mDevice->szPname, mDevice->szPname + wcslen(mDevice->szPname), 'X', &mDeviceName[0]);
+					use_facet<ctype<wchar_t> >(mLocale).narrow(device->szPname, device->szPname + wcslen(device->szPname), 'X', &mDeviceName[0]);
 
 					// Add device to list
 					mDeviceList.insert(make_pair(i, string(mDeviceName)));
 
 					// Clean up
-					delete mDevice;
+					delete device;
 
 				}
 
@@ -361,14 +361,14 @@ private:
 				mNormalBuffer = 0;
 
 				// Start callback thread
-				DWORD mThreadID;
-				mWaveInThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioInputT<T>::Obj::waveInProc, (PVOID)this, 0, &mThreadID);
+				DWORD threadID;
+				mWaveInThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioInputT<T>::Obj::waveInProc, (PVOID)this, 0, &threadID);
 				if (!mWaveInThread) 
 					return;
 				CloseHandle(mWaveInThread);
 
 				// Open input device
-				mResultHnd = waveInOpen(&mDeviceHnd, mDeviceId, &mWavFormat, mThreadID, 0, CALLBACK_THREAD);
+				mResultHnd = waveInOpen(&mDeviceHnd, mDeviceId, &mWavFormat, threadID, 0, CALLBACK_THREAD);
 				if (error()) 
 					return;
 
@@ -419,10 +419,6 @@ private:
 				// Turn off flags
 				mReceiving = false;
 
-				// Wait for every buffer to complete
-				while (mBuffersComplete < BUFFER_COUNT) 
-					Sleep(1);
-
 				// Close input device
 				mResultHnd = waveInReset((HWAVEIN)mDeviceId);
 				if (error()) 
@@ -444,18 +440,18 @@ private:
 		{
 
 			// Get instance
-			AudioInputT<T>::Obj * mInstance = (AudioInputT<T>::Obj *) arg;
+			AudioInputT<T>::Obj * instance = (AudioInputT<T>::Obj *) arg;
 
 			// Get message from thread
-			MSG mMessage;
+			MSG message;
 
 			// Bail if instance not available
-			if (mInstance == NULL) 
+			if (instance == NULL) 
 				return 0;
 
 			// Get message from thread
-			while (GetMessage(&mMessage, 0, 0, 0)) 
-				mInstance->receiveMessage(mMessage);
+			while (GetMessage(&message, 0, 0, 0)) 
+				instance->receiveMessage(message);
 
 			// Return
 			return 0;
