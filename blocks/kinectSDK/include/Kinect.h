@@ -53,6 +53,7 @@ using std::vector;
 // Join name alias
 typedef NUI_IMAGE_RESOLUTION ImageResolution;
 typedef NUI_SKELETON_POSITION_INDEX JointName;
+typedef std::pair<JointName, ci::Vec3f> Joint;
 typedef std::map<JointName, ci::Vec3f> Skeleton;
 
 // Kinect NUI wrapper for Cinder
@@ -76,10 +77,10 @@ private:
 		void stop();
 
 		// Kinect data getters
-		ci::Surface8u getDepth();
-		std::vector<Skeleton> getSkeletons();
-		int32_t getUserCount();
-		ci::Surface8u getVideo();
+		const ci::Surface8u getDepth();
+		const std::vector<Skeleton> getSkeletons();
+		const int32_t getUserCount();
+		const ci::Surface8u getVideo();
 
 		// Remove background for better user tracking
 		void removeBackground(bool remove);
@@ -163,7 +164,7 @@ private:
 		tagRGBQUAD * mRgbDepth;
 		tagRGBQUAD * mRgbVideo;
 		void quadToSurface(ci::Surface8u & surface, uint8_t * buffer, bool depth = false);
-		tagRGBQUAD shortToQuad(uint16_t value);
+		const tagRGBQUAD shortToQuad(uint16_t value);
     
 		// Frame rate
 		double mReadTimeDepth;
@@ -203,18 +204,21 @@ public:
 	void removeBackground(bool remove = true) { mObj->removeBackground(remove); }
 
 	// Getters
-	bool checkNewDepthFrame() { return mObj->mNewDepthFrame; }
-	bool checkNewSkeletons() { return mObj->mNewSkeletons; }
-	bool checkNewVideoFrame() { return mObj->mNewVideoFrame; }
-	ci::Surface8u getDepth() { return mObj->getDepth(); }
-	float getDepthFrameRate() { return mObj->mFrameRateDepth; }
-	float getSkeletonsFrameRate() { return mObj->mFrameRateSkeletons; }
-	float getVideoFrameRate() { return mObj->mFrameRateVideo; }
-	vector<Skeleton> getSkeletons() { return mObj->getSkeletons(); }
-	ci::Colorf getUserColor(uint32_t id) { return mObj->mColors[ci::math<uint32_t>::clamp(id, 0, 5)]; }
-	uint32_t getUserCount() { return mObj->getUserCount(); }
-	ci::Surface8u getVideo() { return mObj->getVideo(); }
-	bool isCapturing() { return mObj->mCapture; }
+	const bool checkNewDepthFrame() { return mObj->mNewDepthFrame; }
+	const bool checkNewSkeletons() { return mObj->mNewSkeletons; }
+	const bool checkNewVideoFrame() { return mObj->mNewVideoFrame; }
+	const ci::Surface8u getDepth() { return mObj->getDepth(); }
+	const float getDepthFrameRate() { return mObj->mFrameRateDepth; }
+	const float getSkeletonsFrameRate() { return mObj->mFrameRateSkeletons; }
+	const float getVideoFrameRate() { return mObj->mFrameRateVideo; }
+	const vector<Skeleton> getSkeletons() { return mObj->getSkeletons(); }
+	const ci::Colorf getUserColor(uint32_t id) { return mObj->mColors[ci::math<uint32_t>::clamp(id, 0, 5)]; }
+	const uint32_t getUserIdByColor(const ci::Colorf & color);
+	const uint32_t getUserIdByColor(uint8_t r, uint8_t g, uint8_t b);
+	const uint32_t getUserIdByColor(float r, float g, float b);
+	const uint32_t getUserCount() { return mObj->getUserCount(); }
+	const ci::Surface8u getVideo() { return mObj->getVideo(); }
+	const bool isCapturing() { return mObj->mCapture; }
 	
 	// Setters
 	void enableBinaryMode(bool enable = true, bool invertImage = false) { mObj->enableBinaryMode(enable, invertImage); }

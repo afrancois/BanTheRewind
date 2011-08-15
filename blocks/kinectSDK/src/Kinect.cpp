@@ -230,7 +230,7 @@ void Kinect::Obj::enableVideo(bool enable)
 }
 
 // Get depth surface
-Surface8u Kinect::Obj::getDepth() 
+const Surface8u Kinect::Obj::getDepth() 
 { 
 
 	// Lock thread
@@ -243,7 +243,7 @@ Surface8u Kinect::Obj::getDepth()
 }
 
 // Get skeletons
-vector<Skeleton> Kinect::Obj::getSkeletons() 
+const vector<Skeleton> Kinect::Obj::getSkeletons() 
 {
 
 	// Lock thread
@@ -256,7 +256,7 @@ vector<Skeleton> Kinect::Obj::getSkeletons()
 }
 
 // Get user count
-int32_t Kinect::Obj::getUserCount() 
+const int32_t Kinect::Obj::getUserCount() 
 {
 
 	// Lock thread
@@ -268,7 +268,7 @@ int32_t Kinect::Obj::getUserCount()
 }
 
 // Get video
-Surface8u Kinect::Obj::getVideo() 
+const Surface8u Kinect::Obj::getVideo() 
 {
 
 	// Lock thread
@@ -554,7 +554,7 @@ void Kinect::Obj::removeBackground(bool remove)
 }
 
 // Convert value to short to quad
-tagRGBQUAD Kinect::Obj::shortToQuad(uint16_t value)
+const tagRGBQUAD Kinect::Obj::shortToQuad(uint16_t value)
 {
 
 	// Extract depth and user values
@@ -603,20 +603,22 @@ tagRGBQUAD Kinect::Obj::shortToQuad(uint16_t value)
 			}
 			break;
 		case 1:
-			quad.rgbRed = intensity;
+			quad.rgbRed = intensity / 2;
+			quad.rgbGreen = intensity / 2;
+			quad.rgbBlue = intensity;
 			break;
 		case 2:
 			quad.rgbGreen = intensity;
 			break;
 		case 3:
-			quad.rgbRed = intensity / 4;
-			quad.rgbGreen = intensity;
-			quad.rgbBlue = intensity;
-			break;
-		case 4:
 			quad.rgbRed = intensity;
 			quad.rgbGreen = intensity;
 			quad.rgbBlue = intensity / 4;
+			break;
+		case 4:
+			quad.rgbRed = intensity / 4;
+			quad.rgbGreen = intensity;
+			quad.rgbBlue = intensity;
 			break;
 		case 5:
 			quad.rgbRed = intensity;
@@ -624,9 +626,7 @@ tagRGBQUAD Kinect::Obj::shortToQuad(uint16_t value)
 			quad.rgbBlue = intensity;
 			break;
 		case 6:
-			quad.rgbRed = intensity / 2;
-			quad.rgbGreen = intensity / 2;
-			quad.rgbBlue = intensity;
+			quad.rgbRed = intensity;
 			break;
 		case 7:
 			if (!mRemoveBackground)
@@ -716,5 +716,46 @@ void Kinect::Obj::trace(const string & message)
 	console() << message << "\n";
 	OutputDebugStringA(message.c_str());
 	OutputDebugStringA("\n");
+
+}
+
+/******************/
+
+// Use color to get user ID
+const uint32_t Kinect::getUserIdByColor(const ci::Colorf & color)
+{
+
+	// Call float overload
+	return getUserIdByColor(color.r, color.g, color.b);
+
+}
+
+// Use color to get user ID
+const uint32_t Kinect::getUserIdByColor(uint8_t r, uint8_t g, uint8_t b)
+{
+
+	// Call float overload
+	return getUserIdByColor((float)r, (float)g, (float)b);
+
+}
+
+// Use color to get user ID
+const uint32_t Kinect::getUserIdByColor(float r, float g, float b)
+{
+
+	// See Kinect::Obj::shortToQuad for this to make sense
+	if (r > g && r > b)
+		return 1;
+	else if (g > r && g > b)
+		return 2;
+	else if (g > r && b > r)
+		return 3;
+	else if (r > b && g > b)
+		return 4;
+	else if (r > g && b > g)
+		return 5;
+	else if (b > r && b > g)
+		return 6;
+	return 0;
 
 }
