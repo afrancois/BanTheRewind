@@ -102,10 +102,10 @@ namespace cinder
 		{
 
 			// Parse and return data
-			Json::Reader mReader;
-			Json::Value mRoot;
-			mReader.parse(value, mRoot);
-			return mRoot;
+			Json::Reader reader;
+			Json::Value root;
+			reader.parse(value, root);
+			return root;
 
 		}
 
@@ -114,29 +114,26 @@ namespace cinder
 		{
 
 			// Open config file, starting from end
-			fstream mFile;
-			mFile.open(filename.c_str(), ios::in|ios::ate);
-			if (!mFile.is_open())
-			{
-				Value value;
-				return value;
-			}
+			fstream file;
+			file.open(filename.c_str(), ios::in|ios::ate);
+			if (!file.is_open())
+				return Value();
 
 			// Get file size and rewind to beginning
-			ifstream::pos_type size = mFile.tellg();
-			char * mConfigData = new char[size];
-			mFile.seekg(0, ios::beg);
+			ifstream::pos_type size = file.tellg();
+			char * configData = new char[size];
+			file.seekg(0, ios::beg);
 
 			// Read entire file into JSON data
-			mFile.read(mConfigData, size);
-			Value mValue = deserialize(string(mConfigData));
+			file.read(configData, size);
+			Value value = deserialize(string(configData));
 
 			// Clean up
-			delete [] mConfigData;
-			mFile.close();
+			delete [] configData;
+			file.close();
 
 			// Return root
-			return mValue;
+			return value;
 
 		}
 
@@ -170,15 +167,29 @@ namespace cinder
 
 		// Read values (index)
 		bool readBool(Value & object, int32_t index) { return object[index].asBool(); }
+		bool readBool(const Value & object, int32_t index) { return object[index].asBool(); }
 		const char * readCString(Value & object, int32_t index) { return object[index].asCString(); }
+		const char * readCString(const Value & object, int32_t index) { return object[index].asCString(); }
 		double readDouble(Value & object, int32_t index) { return object[index].asDouble(); }
+		double readDouble(const Value & object, int32_t index) { return object[index].asDouble(); }
 		int32_t readInt(Value & object, int32_t index) { return object[index].asInt(); }
+		int32_t readInt(const Value & object, int32_t index) { return object[index].asInt(); }
 		string readString(Value & object, int32_t index) { return object[index].asString(); }
+		string readString(const Value & object, int32_t index) { return object[index].asString(); }
 		uint32_t readUint(Value & object, int32_t index) { return object[index].asUInt(); }
+		uint32_t readUint(const Value & object, int32_t index) { return object[index].asUInt(); }
 		Value readValue(Value & object, int32_t index) { return object[index]; }
+		Value readValue(const Value & object, int32_t index) { return object[index]; }
 
 		// Read values (index, plural)
 		vector<bool> readBools(Value & object, int32_t index) 
+		{
+			vector<bool> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asBool());
+			return members;
+		}
+		vector<bool> readBools(const Value & object, int32_t index) 
 		{
 			vector<bool> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
@@ -192,7 +203,21 @@ namespace cinder
 				members.push_back(object[index][i].asCString());
 			return members;
 		}
+		vector<const char *> readCStrings(const Value & object, int32_t index) 
+		{
+			vector<const char *> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asCString());
+			return members;
+		}
 		vector<double> readDoubles(Value & object, int32_t index) 
+		{
+			vector<double> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asDouble());
+			return members;
+		}
+		vector<double> readDoubles(const Value & object, int32_t index) 
 		{
 			vector<double> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
@@ -206,7 +231,21 @@ namespace cinder
 				members.push_back(object[index][i].asInt());
 			return members;
 		}
+		vector<int32_t> readInts(const Value & object, int32_t index) 
+		{
+			vector<int32_t> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asInt());
+			return members;
+		}
 		vector<string> readStrings(Value & object, int32_t index) 
+		{
+			vector<string> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asString());
+			return members;
+		}
+		vector<string> readStrings(const Value & object, int32_t index) 
 		{
 			vector<string> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
@@ -220,7 +259,21 @@ namespace cinder
 				members.push_back(object[index][i].asUInt());
 			return members;
 		}
+		vector<uint32_t> readUints(const Value & object, int32_t index) 
+		{
+			vector<uint32_t> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i].asUInt());
+			return members;
+		}
 		vector<Value> readValues(Value & object, int32_t index) 
+		{ 
+			vector<Value> members;
+			for (uint32_t i = 0; i < object[index].size(); i++)
+				members.push_back(object[index][i]);
+			return members;
+		}
+		vector<Value> readValues(const Value & object, int32_t index) 
 		{ 
 			vector<Value> members;
 			for (uint32_t i = 0; i < object[index].size(); i++)
@@ -230,15 +283,29 @@ namespace cinder
 
 		// Read values (key)
 		bool readBool(Value & object, const string & key) { return object[key].asBool(); }
+		bool readBool(const Value & object, const string & key) { return object[key].asBool(); }
 		const char * readCString(Value & object, const string & key) { return object[key].asCString(); }
+		const char * readCString(const Value & object, const string & key) { return object[key].asCString(); }
 		double readDouble(Value & object, const string & key) { return object[key].asDouble(); }
+		double readDouble(const Value & object, const string & key) { return object[key].asDouble(); }
 		int32_t readInt(Value & object, const string & key) { return object[key].asInt(); }
+		int32_t readInt(const Value & object, const string & key) { return object[key].asInt(); }
 		string readString(Value & object, const string & key) { return object[key].asString(); }
+		string readString(const Value & object, const string & key) { return object[key].asString(); }
 		uint32_t readUint(Value & object, const string & key) { return object[key].asUInt(); }
+		uint32_t readUint(const Value & object, const string & key) { return object[key].asUInt(); }
 		Value readValue(Value & object, const string & key) { return object[key]; }
+		Value readValue(const Value & object, const string & key) { return object[key]; }
 
 		// Read values (key, plural)
 		vector<bool> readBools(Value & object, const string & key) 
+		{
+			vector<bool> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asBool());
+			return members;
+		}
+		vector<bool> readBools(const Value & object, const string & key) 
 		{
 			vector<bool> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
@@ -252,7 +319,21 @@ namespace cinder
 				members.push_back(object[key][i].asCString());
 			return members;
 		}
+		vector<const char *> readCStrings(const Value & object, const string & key) 
+		{
+			vector<const char *> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asCString());
+			return members;
+		}
 		vector<double> readDoubles(Value & object, const string & key) 
+		{
+			vector<double> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asDouble());
+			return members;
+		}
+		vector<double> readDoubles(const Value & object, const string & key) 
 		{
 			vector<double> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
@@ -266,7 +347,21 @@ namespace cinder
 				members.push_back(object[key][i].asInt());
 			return members;
 		}
+		vector<int32_t> readInts(const Value & object, const string & key) 
+		{
+			vector<int32_t> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asInt());
+			return members;
+		}
 		vector<string> readStrings(Value & object, const string & key) 
+		{
+			vector<string> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asString());
+			return members;
+		}
+		vector<string> readStrings(const Value & object, const string & key) 
 		{
 			vector<string> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)
@@ -280,7 +375,21 @@ namespace cinder
 				members.push_back(object[key][i].asUInt());
 			return members;
 		}
+		vector<uint32_t> readUints(const Value & object, const string & key) 
+		{
+			vector<uint32_t> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i].asUInt());
+			return members;
+		}
 		vector<Value> readValues(Value & object, const string & key) 
+		{ 
+			vector<Value> members;
+			for (uint32_t i = 0; i < object[key].size(); i++)
+				members.push_back(object[key][i]);
+			return members;
+		}
+		vector<Value> readValues(const Value & object, const string & key) 
 		{ 
 			vector<Value> members;
 			for (uint32_t i = 0; i < object[key].size(); i++)

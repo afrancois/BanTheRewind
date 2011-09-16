@@ -90,43 +90,75 @@ namespace cinder
 
 		// Read values (index)
 		bool readBool(Value & object, int32_t index);
+		bool readBool(const Value & object, int32_t index);
 		const char * readCString(Value & object, int32_t index);
+		const char * readCString(const Value & object, int32_t index);
 		double readDouble(Value & object, int32_t index);
+		double readDouble(const Value & object, int32_t index);
 		float readFloat(Value & object, int32_t index);
+		float readFloat(const Value & object, int32_t index);
 		int32_t readInt(Value & object, int32_t index);
+		int32_t readInt(const Value & object, int32_t index);
 		std::string readString(Value & object, int32_t index);
+		std::string readString(const Value & object, int32_t index);
 		uint32_t readUint(Value & object, int32_t index);
+		uint32_t readUint(const Value & object, int32_t index);
 		Value readValue(Value & object, int32_t index);
+		Value readValue(const Value & object, int32_t index);
 
 		// Read values (index, plural)
 		std::vector<bool> readBools(Value & object, int32_t index);
+		std::vector<bool> readBools(const Value & object, int32_t index);
 		std::vector<const char *> readCStrings(Value & object, int32_t index);
+		std::vector<const char *> readCStrings(const Value & object, int32_t index);
 		std::vector<double> readDoubles(Value & object, int32_t index);
+		std::vector<double> readDoubles(const Value & object, int32_t index);
 		std::vector<float> readFloats(Value & object, int32_t index);
+		std::vector<float> readFloats(const Value & object, int32_t index);
 		std::vector<int32_t> readInts(Value & object, int32_t index);
+		std::vector<int32_t> readInts(const Value & object, int32_t index);
 		std::vector<std::string> readStrings(Value & object, int32_t index);
+		std::vector<std::string> readStrings(const Value & object, int32_t index);
 		std::vector<uint32_t> readUints(Value & object, int32_t index);
+		std::vector<uint32_t> readUints(const Value & object, int32_t index);
 		std::vector<Value> readValues(Value & object, int32_t index);
+		std::vector<Value> readValues(const Value & object, int32_t index);
 
 		// Read values (key)
 		bool readBool(Value & object, const std::string & key);
+		bool readBool(const Value & object, const std::string & key);
 		const char * readCString(Value & object, const std::string & key);
+		const char * readCString(const Value & object, const std::string & key);
 		double readDouble(Value & object, const std::string & key);
+		double readDouble(const Value & object, const std::string & key);
 		float readFloat(Value & object, const std::string & key);
+		float readFloat(const Value & object, const std::string & key);
 		int32_t readInt(Value & object, const std::string & key);
+		int32_t readInt(const Value & object, const std::string & key);
 		std::string readString(Value & object, const std::string & key);
+		std::string readString(const Value & object, const std::string & key);
 		Value readValue(Value & object, const std::string & key);
+		Value readValue(const Value & object, const std::string & key);
 		uint32_t readUint(Value & object, const std::string & key);
+		uint32_t readUint(const Value & object, const std::string & key);
 
 		// Read values (key, plural)
 		std::vector<bool> readBools(Value & object, const std::string & key);
+		std::vector<bool> readBools(const Value & object, const std::string & key);
 		std::vector<const char *> readCStrings(Value & object, const std::string & key);
+		std::vector<const char *> readCStrings(const Value & object, const std::string & key);
 		std::vector<double> readDoubles(Value & object, const std::string & key);
+		std::vector<double> readDoubles(const Value & object, const std::string & key);
 		std::vector<float> readFloats(Value & object, const std::string & key);
+		std::vector<float> readFloats(const Value & object, const std::string & key);
 		std::vector<int32_t> readInts(Value & object, const std::string & key);
+		std::vector<int32_t> readInts(const Value & object, const std::string & key);
 		std::vector<std::string> readStrings(Value & object, const std::string & key);
+		std::vector<std::string> readStrings(const Value & object, const std::string & key);
 		std::vector<Value> readValues(Value & object, const std::string & key);
+		std::vector<Value> readValues(const Value & object, const std::string & key);
 		std::vector<uint32_t> readUints(Value & object, const std::string & key);
+		std::vector<uint32_t> readUints(const Value & object, const std::string & key);
 
 		// Save JSON to file, URL
 		void save(const Value & value, const std::string & path);
