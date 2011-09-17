@@ -117,7 +117,10 @@ namespace cinder
 			fstream file;
 			file.open(filename.c_str(), ios::in|ios::ate);
 			if (!file.is_open())
-				return Value();
+			{
+				Value value;
+				return value;
+			}
 
 			// Get file size and rewind to beginning
 			ifstream::pos_type size = file.tellg();
