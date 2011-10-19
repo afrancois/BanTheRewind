@@ -44,8 +44,13 @@ using namespace gl;
 using namespace std;
 
 // Constructor
-TextField::Obj::Obj(const Area & area, const Font & font, bool wrap) : mFont(font), mLeading(font.getLeading()), mWrap(wrap)
+TextField::Obj::Obj(const Area & area, const Font & font, bool wrap, bool centered) 
+	: mCentered(centered), mFlipped(false), mFont(font), mLeading(font.getLeading()), mWrap(wrap)
 {
+
+	// Set timing properties
+	mContactInterval = 0.1;
+	mLastContactTime = 0.0;
 
 	// Set size
 	set(area.getX1(), area.getY1(), area.getX2(), area.getY2());
@@ -55,6 +60,13 @@ TextField::Obj::Obj(const Area & area, const Font & font, bool wrap) : mFont(fon
 // Destructor
 TextField::Obj::~Obj()
 {
+
+	// Clean up
+	if (mFont)
+		mFont.reset();
+	if (mTexture)
+		mTexture.reset();
+	mValue.clear();
 
 }
 
@@ -71,27 +83,25 @@ void TextField::Obj::operator +(const string & value)
 void TextField::Obj::operator +=(const string & value)
 {
 
-	// Check length
+	// Add character
 	if (value.length() > 0)
 	{
-
-		// Add character
 		mValue += value;
-
-		// Update texture
 		update();
-
 	}
 
 }
 
 // Remove a character
-void TextField::Obj::operator--()
+void TextField::Obj::operator --()
 {
 
 	// DO IT!
 	if (mValue.length() > 0) 
+	{
 		mValue = mValue.substr(0, mValue.length() - 1);
+		update();
+	}
 
 }
 
@@ -116,18 +126,30 @@ bool TextField::Obj::operator !=(const string & value)
 // Get actual render area (width/height excludes transparent pixels)
 Area TextField::Obj::getBounds()
 {
-
-	// DO IT!
 	return mBounds;
-
+}
+Area TextField::Obj::getBounds() const
+{
+	return mBounds;
 }
 
-// Draw
+// Get texture
 gl::Texture TextField::Obj::getTexture()
 {
-
-	// Return texture
 	return mTexture;
+}
+gl::Texture TextField::Obj::getTexture() const
+{
+	return mTexture;
+}
+
+// Flip texture
+void TextField::Obj::setFlipped(bool flip)
+{
+
+	// Change font and update
+	mFlipped = flip;
+	update();
 
 }
 
@@ -157,9 +179,9 @@ void TextField::Obj::setX(int32_t value)
 { 
 
 	// Update corners
-	int32_t mDiff = value - x1; 
-	x1 += mDiff;
-	x2 += mDiff;
+	int32_t diff = value - x1; 
+	x1 += diff;
+	x2 += diff;
 	update();
 
 }
@@ -169,9 +191,9 @@ void TextField::Obj::setY(int32_t value)
 { 
 
 	// Update corners
-	int32_t mDiff = value - y1; 
-	y1 += mDiff;
-	y2 += mDiff;
+	int32_t diff = value - y1; 
+	y1 += diff;
+	y2 += diff;
 	update();
 
 }
@@ -179,10 +201,11 @@ void TextField::Obj::setY(int32_t value)
 // Get value
 string TextField::Obj::str()
 {
-
-	// DO IT!
 	return mValue;
-
+}
+string TextField::Obj::str() const
+{
+	return mValue;
 }
 
 // Set value
@@ -220,100 +243,44 @@ void TextField::Obj::update()
 		if (mWrap)
 		{
 
-			// Split string to words
-			mTokens.clear();
-			boost::split(mTokens, mValue, boost::is_any_of(" "));
-
-			// Iterate through words
-			mValue = "";
-			string mLine = "";
-			for (vector<string>::const_iterator mToken = mTokens.begin(); mToken != mTokens.end(); ++mToken)
-			{
-
-				// Skip empty tokens
-				if (mToken->length() > 0)
-				{
-
-					// Render word
-					mTextLayoutWord = TextLayout();
-					mTextLayoutWord.setColor(Color::white());
-					mTextLayoutWord.setFont(mFont);
-					mTextLayoutWord.setLeadingOffset(mLeading);
-					mTextLayoutWord.addLine((* mToken));
-					mTexWord = gl::Texture(mTextLayoutWord.render(true, false));
-
-					// Render line
-					if (mLine.length() > 0)
-					{
-						mTextLayoutLine = TextLayout();
-						mTextLayoutLine.setColor(Color::white());
-						mTextLayoutLine.setFont(mFont);
-						mTextLayoutLine.setLeadingOffset(mLeading);
-						mTextLayoutLine.addLine(mLine);
-						mTexture = gl::Texture(mTextLayoutLine.render(true, false));
-					}
-
-					// We're just starting or line width has been reached
-					if (mLine.length() <= 0 || x1 + mTexture.getWidth() + mTexWord.getWidth() > x2)
-					{
-
-						// Start new line
-						if (mLine.length() > 0) mValue += "\n";
-						mValue += (* mToken);
-						mLine = (* mToken);
-
-					}
-					else
-					{
-
-						// Add word
-						mValue += (* mToken);
-						mLine += (* mToken);
-
-					}
-
-					// Add space
-					mLine += " ";
-					mValue += " ";
-
-				}
-
-			}
+			// Create multiline text
+			mTextBox = TextBox().alignment(mCentered ? TextBox::CENTER : TextBox::LEFT).font(mFont).size(Vec2i(this->getWidth(), TextBox::GROW)).text(mValue);
+			mTextBox.setColor(ColorAf::white());
+			mTextBox.setBackgroundColor(ColorAf(0.5F, 0.0f, 0.0f, 0.0f));
+			mTexture = gl::Texture(mTextBox.render());
 
 		}
-
-		// Create final layout
-		mTextLayout = TextLayout();
-		mTextLayout.setColor(Color::white());
-		mTextLayout.setFont(mFont);
-		mTextLayout.setLeadingOffset(mLeading);
-
-		// Add lines to layout
-		mTokens.clear();
-		boost::split(mTokens, mValue, boost::is_any_of("\n"));
-		bool mRender = false;
-		for (vector<string>::const_iterator mToken = mTokens.begin(); mToken != mTokens.end(); ++mToken)
-		{
-			if (mToken->length() > 0)
-			{
-				mTextLayout.addLine((* mToken));
-				mRender = true;
-			}
-		}
-
-		// Only render if lines were added to the layout
-		if (mRender)
+		else
 		{
 
-			// Render text
+			// Create single line text
+			mTextLayout = TextLayout();
+			mTextLayout.setColor(Color::white());
+			mTextLayout.setFont(mFont);
+			mTextLayout.setLeadingOffset(mLeading);
+			if (mCentered)
+				mTextLayout.addCenteredLine(mValue);
+			else
+				mTextLayout.addLine(mValue);
 			mTexture = gl::Texture(mTextLayout.render(true, false));
 
-			// Get bounds
-			mBounds = mTexture.getBounds();
-			mBounds.set(mBounds.getX1() + x1, mBounds.getY1() + y1, mBounds.getX2() + x1, mBounds.getY2() + y1);
-
 		}
 
+		// Flip, if needed
+		mTexture.setFlipped(mFlipped);
+
 	}
+	else
+	{
+
+		// Create minimal texture if string is empty
+		mTexture.reset();
+		mTexture = gl::Texture(Surface8u(8, 8, true, SurfaceChannelOrder::RGBA));
+
+	}
+
+	// Update bounds
+	mBounds = mTexture.getBounds();
+	mBounds.set(mBounds.getX1() + x1, mBounds.getY1() + y1, mBounds.getX2() + x1, mBounds.getY2() + y1);
 
 }

@@ -56,14 +56,14 @@ private:
 	public:
 
 		// Con/de-structor
-		Obj(const ci::Area & area, const ci::Font & font, bool wrap);
+		Obj(const ci::Area & area, const ci::Font & font, bool wrap, bool centered = false);
 		~Obj();
 
-		// Get rendered texture
-		ci::gl::Texture getTexture();
-
-		// Get render area
+		// Get rendered texture and area
 		ci::Area getBounds();
+		ci::Area getBounds() const;
+		ci::gl::Texture getTexture();
+		ci::gl::Texture getTexture() const;
 
 		// String operators
 		void operator +(const std::string & value);
@@ -76,8 +76,10 @@ private:
 		void str(const int_fast8_t * value);
 		void str(const std::string &value);
 		std::string str();
+		std::string str() const;
 
 		// Change text display settings
+		void setFlipped(bool flip);
 		void setFont(const ci::Font & font);
 		void setLeading(float leading);
 
@@ -97,14 +99,13 @@ private:
 
 		// Text
 		ci::Area mBounds;
+		bool mCentered;
 		float mLeading;
+		bool mFlipped;
 		ci::Font mFont;
+		ci::TextBox mTextBox;
 		ci::gl::Texture mTexture;
-		ci::gl::Texture mTexWord;
 		ci::TextLayout mTextLayout;
-		ci::TextLayout mTextLayoutLine;
-		ci::TextLayout mTextLayoutWord;
-		std::vector<std::string> mTokens;
 		std::string mValue;
 		bool mWrap;
 
@@ -117,9 +118,9 @@ public:
 	
 	// Contructors
 	TextField() {};
-	TextField(const ci::Area & area, const ci::Font & font) 
+	TextField(const ci::Area & area, const ci::Font & font, bool centered = false) 
 	{ 
-		mObj = std::shared_ptr<Obj>(new Obj(area, font, true));
+		mObj = std::shared_ptr<Obj>(new Obj(area, font, true, centered));
 	};
 	TextField(const ci::Vec2f & position, const ci::Font & font) 
 	{ 
@@ -129,11 +130,20 @@ public:
 	{ 
 		mObj = std::shared_ptr<Obj>(new Obj(ci::Area(position.x, position.y, position.x + 1, position.y + 1), font, false)); 
 	};
-	~TextField() { mObj.reset(); }
+	~TextField() { reset(); }
+
+	// Reset
+	void reset() 
+	{ 
+		if (mObj)
+			mObj.reset(); 
+	}
 
 	// Texture methods
-	ci::gl::Texture getTexture() { return mObj->getTexture(); };
-	ci::Area getBounds() { return mObj->getBounds(); };
+	ci::gl::Texture getTexture() { return mObj->getTexture(); }
+	ci::gl::Texture getTexture() const { return mObj->getTexture(); }
+	ci::Area getBounds() { return mObj->getBounds(); }
+	ci::Area getBounds() const { return mObj->getBounds(); }
 
 	// Srting operators
 	void operator +(const std::string & value) { mObj->operator+(value); }
@@ -144,21 +154,25 @@ public:
 
 	// String methods
 	void str(const int_fast8_t * value) { mObj->str(value); }
-	void str(const std::string &value) { mObj->str(value); }
+	void str(const std::string & value) { mObj->str(value); }
 	std::string str() { return mObj->str(); }
+	std::string str() const { return mObj->str(); }
 
 	// Font methods
+	void setFlipped(bool flip = true) { mObj->setFlipped(true); }
 	void setFont(const ci::Font & font) { mObj->setFont(font); }
 	void setLeading(float leading) { mObj->setLeading(leading); }
 
 	// Area methods
 	bool contains(const ci::Vec2f & offset) 
 	{
-		// Bail if simulateous touches
+
+		// Bail if simultaneous touches
 		if (ci::app::getElapsedSeconds() - mObj->mLastContactTime < mObj->mContactInterval)
 			return false;
 		mObj->mLastContactTime = ci::app::getElapsedSeconds();
 		return mObj->contains(offset); 
+
 	}
 	void setX(int32_t value) { mObj->setX(value); }
 	void setY(int32_t value) { mObj->setY(value); }
