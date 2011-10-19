@@ -37,7 +37,7 @@
 #pragma once
 
 // Includes
-#include <cinder/Cinder.h>
+#include <cinder/Filesystem.h>
 #include <jwsmtp/jwsmtp.h>
 
 namespace cinder 
@@ -78,14 +78,16 @@ namespace cinder
 			// Reset
 			void reset();
 
-			// Getters
+			// Get server response
 			const std::string getResponse();
 			const std::string getResponse() const;
 
 			// Attachments
 			bool addAttachment(const std::string & filename);
+			bool addAttachment(const ci::fs::path & path);
 			void clearAttachments();
 			bool removeAttachment(const std::string & filename);
+			bool removeAttachment(const ci::fs::path & path);
 
 			// Recipient
 			bool addTo(const std::string & to);

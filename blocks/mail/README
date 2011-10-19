@@ -1,0 +1,15 @@
+This block proposes a mail namespace inside of Cinder
+for handling all e-mail operations. It currently wraps
+jwSMTP for sending e-mail.
+
+WISH LIST
+
+- Sample project
+- Receive mail
+
+-----------------------------------------
+
+http://www.bantherewind.com
+http://www.libcinder.org
+
+bantherewind@gmail.com

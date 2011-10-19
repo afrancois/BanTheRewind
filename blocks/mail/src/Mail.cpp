@@ -83,7 +83,7 @@ namespace cinder
 				mObj->reset();
 		}
 
-		// Getters
+		// Get server response
 		const std::string Message::getResponse() { return mObj ? mObj->response() : ""; }
 		const std::string Message::getResponse() const { return mObj ? mObj->response() : ""; }
 
@@ -98,12 +98,14 @@ namespace cinder
 
 		// Attachments
 		bool Message::addAttachment(const std::string & filename) { return mObj ? mObj->attach(filename) : false; }
+		bool Message::addAttachment(const ci::fs::path & path) { return addAttachment(path.string()); }
 		void Message::clearAttachments() 
 		{
 			if (mObj)
 				mObj->clearattachments();
 		}
 		bool Message::removeAttachment(const std::string & filename) { return mObj ? mObj->removeattachment(filename) : false; }
+		bool Message::removeAttachment(const ci::fs::path & path) { return removeAttachment(path.string()); }
 
 		// Setters
 		void Message::setAuthentication(const AuthType & authType, const std::string & username, const std::string & password)
