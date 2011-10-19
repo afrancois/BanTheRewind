@@ -2,10 +2,33 @@ This block proposes a mail namespace inside of Cinder
 for handling all e-mail operations. It currently wraps
 jwSMTP for sending e-mail.
 
+This blocks while sending, allowing you to create a 
+queue a messages and send them sequentially.  However, 
+you might want to run the queue in a separate thread.
+
 WISH LIST
 
 - Sample project
 - Receive mail
+
+-----------------------------------------
+
+NOTE TO WINDOWS DEVELOPERS
+
+There's a well-known issue with including "Winsock.h" or 
+Winsock2.h" after "Windows.h".  To use jwSMTP in Windows, 
+simply include the block before you include anything from 
+Cinder --or-- just add this at the top of your main 
+application's header:
+
+#define _WINSOCKAPI_
+
+This will block "Windows.h" from including any Winsock*.h 
+files before you want them.
+
+-----------------------------------------
+
+
 
 -----------------------------------------
 
