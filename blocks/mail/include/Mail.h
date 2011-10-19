@@ -82,17 +82,23 @@ namespace cinder
 			const std::string getResponse();
 			const std::string getResponse() const;
 
-			// Attachments
-			bool addAttachment(const std::string & filename);
-			bool addAttachment(const ci::fs::path & path);
-			void clearAttachments();
-			bool removeAttachment(const std::string & filename);
-			bool removeAttachment(const ci::fs::path & path);
-
 			// Recipient
 			bool addTo(const std::string & to);
+			bool addTo(const std::vector<std::string> & to);
 			void clearTo();
 			bool removeTo(const std::string & to);
+			bool removeTo(const std::vector<std::string> & to);
+
+			// Attachments
+			bool addAttachment(const std::string & path);
+			bool addAttachments(const std::vector<std::string> & paths);
+			bool addAttachment(const ci::fs::path & path);
+			bool addAttachments(const std::vector<ci::fs::path> & paths);
+			void clearAttachments();
+			bool removeAttachment(const std::string & path);
+			bool removeAttachments(const std::vector<std::string> & paths);
+			bool removeAttachment(const ci::fs::path & path);
+			bool removeAttachments(const std::vector<ci::fs::path> & paths);
 
 			// Setters
 			void setAuthentication(const AuthType & authType = AuthType::PLAIN, const std::string & username = "", const std::string & password = "");
