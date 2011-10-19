@@ -3,7 +3,7 @@ for handling all e-mail operations. It currently wraps
 jwSMTP for sending e-mail.
 
 This blocks while sending, allowing you to create a 
-queue a messages and send them sequentially.  However, 
+queue of messages and send them sequentially.  However, 
 you might want to run the queue in a separate thread.
 
 WISH LIST
