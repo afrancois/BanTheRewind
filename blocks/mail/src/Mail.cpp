@@ -92,7 +92,9 @@ namespace cinder
 		bool Message::addTo(const std::vector<std::string> & to)
 		{
 			for (std::vector<std::string>::const_iterator toIt = to.cbegin(); toIt != to.cend(); ++toIt)
-				addTo(* toIt);
+				if (!addTo(* toIt))
+					return false;
+			return true;
 		}
 		void Message::clearTo() 
 		{ 
@@ -103,7 +105,9 @@ namespace cinder
 		bool Message::removeTo(const std::vector<std::string> & to)
 		{
 			for (std::vector<std::string>::const_iterator toIt = to.cbegin(); toIt != to.cend(); ++toIt)
-				removeTo(* toIt);
+				if (!removeTo(* toIt))
+					return false;
+			return true;
 		}
 
 		// Attachments
@@ -111,30 +115,38 @@ namespace cinder
 		bool Message::addAttachments(const std::vector<std::string> & paths)
 		{
 			for (std::vector<std::string>::const_iterator pathIt = paths.cbegin(); pathIt != paths.cend(); ++pathIt)
-				addAttachment(* pathIt);
+				if (!addAttachment(* pathIt))
+					return false;
+			return true;
 		}
 		bool Message::addAttachment(const ci::fs::path & path) { return addAttachment(path.string()); }
 		bool Message::addAttachments(const std::vector<ci::fs::path> & paths)
 		{
 			for (std::vector<ci::fs::path>::const_iterator pathIt = paths.cbegin(); pathIt != paths.cend(); ++pathIt)
-				addAttachment(* pathIt);
+				if (!addAttachment(* pathIt))
+					return false;
+			return true;
 		}
 		void Message::clearAttachments() 
 		{
 			if (mObj)
 				mObj->clearattachments();
 		}
-		bool Message::removeAttachment(const std::string & filename) { return mObj ? mObj->removeattachment(filename) : false; }
+		bool Message::removeAttachment(const std::string & path) { return mObj ? mObj->removeattachment(path) : false; }
 		bool Message::removeAttachments(const std::vector<std::string> & paths)
 		{
 			for (std::vector<std::string>::const_iterator pathIt = paths.cbegin(); pathIt != paths.cend(); ++pathIt)
-				removeAttachment(* pathIt);
+				if (!removeAttachment(* pathIt))
+					return false;
+			return true;
 		}
 		bool Message::removeAttachment(const ci::fs::path & path) { return removeAttachment(path.string()); }
 		bool Message::removeAttachments(const std::vector<ci::fs::path> & paths)
 		{
 			for (std::vector<ci::fs::path>::const_iterator pathIt = paths.cbegin(); pathIt != paths.cend(); ++pathIt)
-				removeAttachment(* pathIt);
+				if (!removeAttachment(* pathIt))
+					return false;
+			return true;
 		}
 
 		// Setters
