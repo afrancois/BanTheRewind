@@ -37,6 +37,11 @@
 // Include header
 #include "ciEmotiv.h"
 
+// Imports
+using namespace ci;
+using namespace ci::app;
+using namespace std;
+
 // Constructor
 ciEmotiv::Obj::Obj()
 {

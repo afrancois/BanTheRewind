@@ -51,11 +51,6 @@
 #include <emotiv/edkErrorCode.h>
 #include <Kiss.h>
 
-// Imports
-using namespace ci;
-using namespace ci::app;
-using namespace std;
-
 // Emotive event
 class EmotivEvent
 {
@@ -222,7 +217,7 @@ private:
 	// Callback alias
 	typedef boost::signals2::connection Callback;
 	typedef std::shared_ptr<Callback> CallbackRef;
-	typedef map<int32_t, CallbackRef> CallbackList;
+	typedef std::map<int32_t, CallbackRef> CallbackList;
 
 	// EEG channels to use in FFT calculation
 	static const int32_t EEG_CHANNEL_BEGIN = 1;
@@ -238,7 +233,7 @@ private:
 		~Obj();
 
 		// Dis/connect
-		bool connect(const string & deviceId, const string & remoteAddress, uint16_t port);
+		bool connect(const std::string & deviceId, const std::string & remoteAddress, uint16_t port);
 		bool disconnect();
 		int32_t getNumUsers();
 
@@ -247,8 +242,8 @@ private:
 		CallbackList mCallbacks;
 
 		// Profiles
-		map<string, string> listProfiles(const string & dataPath);
-		bool loadProfile(const string & profilePath, uint32_t userId);
+		std::map<std::string, std::string> listProfiles(const std::string & dataPath);
+		bool loadProfile(const std::string & profilePath, uint32_t userId);
 
 		// Event handlers
 		EmoEngineEventHandle mEvent;
@@ -296,7 +291,7 @@ public:
 	~ciEmotiv() {}
 
 	// Dis/connect
-	bool connect(const string & deviceId = "Emotiv Systems-5", const string & remoteAddress = "", uint16_t port = 0) { return mObj->connect(deviceId, remoteAddress, port); }
+	bool connect(const std::string & deviceId = "Emotiv Systems-5", const std::string & remoteAddress = "", uint16_t port = 0) { return mObj->connect(deviceId, remoteAddress, port); }
 	bool connected() { return mObj->mConnected; }
 	bool disconnect() { return mObj->disconnect(); }
 	int32_t getNumUsers() { return mObj->getNumUsers(); }
@@ -306,8 +301,8 @@ public:
 	bool fftEnabled() { return mObj->mFftEnabled; }
 
 	// Profiles
-	map<string, string> listProfiles(const string & dataPath = "") { return mObj->listProfiles(dataPath); }
-	bool loadProfile(const string & profilePath, uint32_t userId = 0x00) { return mObj->loadProfile(profilePath, userId); }
+	map<string, string> listProfiles(const std::string & dataPath = "") { return mObj->listProfiles(dataPath); }
+	bool loadProfile(const std::string & profilePath, uint32_t userId = 0x00) { return mObj->loadProfile(profilePath, userId); }
 
 	// Add callback
 	template<typename T>
@@ -318,7 +313,7 @@ public:
 		int32_t mCallbackID = mObj->mCallbacks.empty() ? 0 : mObj->mCallbacks.rbegin()->first + 1;
 
 		// Create callback and add it to the list
-		mObj->mCallbacks.insert(make_pair(mCallbackID, CallbackRef(new Callback(mObj->mSignal.connect(boost::function<void (EmotivEvent)>(boost::bind(callbackFunction, callbackObject, _1)))))));
+		mObj->mCallbacks.insert(make_pair(mCallbackID, CallbackRef(new Callback(mObj->mSignal.connect(boost::function<void (EmotivEvent)>(boost::bind(callbackFunction, callbackObject, ::_1)))))));
 
 		// Return callback ID
 		return mCallbackID;
