@@ -301,7 +301,7 @@ public:
 	bool fftEnabled() { return mObj->mFftEnabled; }
 
 	// Profiles
-	map<string, string> listProfiles(const std::string & dataPath = "") { return mObj->listProfiles(dataPath); }
+	std::map<std::string, std::string> listProfiles(const std::string & dataPath = "") { return mObj->listProfiles(dataPath); }
 	bool loadProfile(const std::string & profilePath, uint32_t userId = 0x00) { return mObj->loadProfile(profilePath, userId); }
 
 	// Add callback
